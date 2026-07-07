@@ -39,3 +39,15 @@ test "drift report keeps close windows stable" {
   assert_true(report.level == Stable)
   assert_false(report.is_alert())
 }
+
+///|
+test "drift window keeps the most recent values" {
+  let spec = BucketSpec::new(0, 100, 5)
+  let window = DriftWindow::new(spec, 3).push(10).push(20).push(30).push(90)
+  let hist = window.histogram()
+  assert_eq(window.length(), 3)
+  assert_eq(hist.total, 3)
+  assert_eq(hist.count_at(0), 1)
+  assert_eq(hist.count_at(1), 1)
+  assert_eq(hist.count_at(4), 1)
+}
