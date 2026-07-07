@@ -33,6 +33,15 @@ pub fn compare_histograms(
   reference : Histogram,
   current : Histogram,
 ) -> DriftReport {
+  compare_histograms_with_policy(reference, current, DriftPolicy::default())
+}
+
+///|
+pub fn compare_histograms_with_policy(
+  reference : Histogram,
+  current : Histogram,
+  policy : DriftPolicy,
+) -> DriftReport {
   let bucket_count = min_int(reference.counts.length(), current.counts.length())
   let deltas : Array[BucketDelta] = []
   let mut total_delta = 0
@@ -60,7 +69,7 @@ pub fn compare_histograms(
   }
   let score = total_delta / 2
   {
-    level: classify_drift(score, max_delta, shifted),
+    level: policy.classify(score, max_delta, shifted),
     score_bp: score,
     max_delta_bp: max_delta,
     shifted_buckets: shifted,
@@ -84,21 +93,6 @@ pub fn DriftReport::level_name(self : DriftReport) -> String {
     Stable => "stable"
     Watch => "watch"
     Drift => "drift"
-  }
-}
-
-///|
-fn classify_drift(
-  score_bp : Int,
-  max_delta_bp : Int,
-  shifted : Int,
-) -> DriftLevel {
-  if score_bp >= 2000 || max_delta_bp >= 2500 || shifted >= 4 {
-    Drift
-  } else if score_bp >= 800 || max_delta_bp >= 1200 || shifted >= 2 {
-    Watch
-  } else {
-    Stable
   }
 }
 
