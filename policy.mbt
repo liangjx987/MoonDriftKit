@@ -25,11 +25,11 @@ pub fn DriftPolicy::default() -> DriftPolicy {
 pub fn DriftPolicy::strict() -> DriftPolicy {
   {
     watch_score_bp: 400,
-    drift_score_bp: 1200,
+    drift_score_bp: 1000,
     watch_max_delta_bp: 800,
     drift_max_delta_bp: 1800,
     watch_shifted_buckets: 1,
-    drift_shifted_buckets: 3,
+    drift_shifted_buckets: 2,
   }
 }
 
