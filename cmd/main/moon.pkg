@@ -1,0 +1,7 @@
+import {
+  "liangjx987/moondriftkit" @drift,
+}
+
+options(
+  "is-main": true,
+)

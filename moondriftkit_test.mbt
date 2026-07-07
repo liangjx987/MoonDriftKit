@@ -62,3 +62,13 @@ test "json exports are deterministic" {
   assert_true(report.to_json().contains("\"level\":\"drift\""))
   assert_true(report.to_json().contains("\"score_bp\":10000"))
 }
+
+///|
+test "level names are stable public strings" {
+  let spec = BucketSpec::new(0, 10, 2)
+  let stable = compare_histograms(
+    Histogram::new(spec).add_many([1, 2]),
+    Histogram::new(spec).add_many([1, 2]),
+  )
+  assert_eq(stable.level_name(), "stable")
+}
