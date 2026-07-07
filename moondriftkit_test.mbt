@@ -51,3 +51,14 @@ test "drift window keeps the most recent values" {
   assert_eq(hist.count_at(1), 2)
   assert_eq(hist.count_at(4), 1)
 }
+
+///|
+test "json exports are deterministic" {
+  let spec = BucketSpec::new(0, 100, 2)
+  let reference = Histogram::new(spec).add_many([10, 20])
+  let current = Histogram::new(spec).add_many([80, 90])
+  let report = compare_histograms(reference, current)
+  assert_true(reference.to_json().contains("\"counts\":[2,0]"))
+  assert_true(report.to_json().contains("\"level\":\"drift\""))
+  assert_true(report.to_json().contains("\"score_bp\":10000"))
+}
