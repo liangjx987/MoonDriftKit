@@ -24,7 +24,7 @@ test "drift report classifies shifted distributions" {
   let reference = Histogram::new(spec).add_many([5, 15, 25, 35, 45])
   let current = Histogram::new(spec).add_many([65, 75, 85, 95, 99])
   let report = compare_histograms(reference, current)
-  assert_eq(report.level, Drift)
+  assert_true(report.level == Drift)
   assert_true(report.is_alert())
   assert_true(report.score_bp >= 8000)
   assert_eq(report.buckets.length(), 5)
@@ -36,6 +36,6 @@ test "drift report keeps close windows stable" {
   let reference = Histogram::new(spec).add_many([10, 20, 30, 40, 50])
   let current = Histogram::new(spec).add_many([11, 21, 31, 41, 51])
   let report = compare_histograms(reference, current)
-  assert_eq(report.level, Stable)
+  assert_true(report.level == Stable)
   assert_false(report.is_alert())
 }
