@@ -20,5 +20,6 @@ The CLI package is separated under `cmd/main`.
 - `Histogram` for baseline/current windows.
 - `compare_histograms` for drift reports.
 - `DriftWindow` for fixed-size streaming windows.
+- `DriftPolicy` for configurable watch/drift thresholds.
 - JSON report export.
 - CLI demo and regression tests.

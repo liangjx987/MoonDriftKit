@@ -1,0 +1,92 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "liangjx987/moondriftkit"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn compare_histograms(Histogram, Histogram) -> DriftReport
+
+pub fn compare_histograms_with_policy(Histogram, Histogram, DriftPolicy) -> DriftReport
+
+// Errors
+
+// Types and methods
+pub(all) struct BucketDelta {
+  index : Int
+  lower : Int
+  upper : Int
+  reference_bp : Int
+  current_bp : Int
+  delta_bp : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct BucketSpec {
+  min : Int
+  max : Int
+  buckets : Int
+} derive(Eq, @debug.Debug)
+pub fn BucketSpec::bucket_count(Self) -> Int
+pub fn BucketSpec::index_of(Self, Int) -> Int
+pub fn BucketSpec::lower_bound(Self, Int) -> Int
+pub fn BucketSpec::new(Int, Int, Int) -> Self
+pub fn BucketSpec::upper_bound(Self, Int) -> Int
+
+pub(all) enum DriftLevel {
+  Stable
+  Watch
+  Drift
+} derive(Eq, @debug.Debug)
+
+pub(all) struct DriftPolicy {
+  watch_score_bp : Int
+  drift_score_bp : Int
+  watch_max_delta_bp : Int
+  drift_max_delta_bp : Int
+  watch_shifted_buckets : Int
+  drift_shifted_buckets : Int
+} derive(Eq, @debug.Debug)
+pub fn DriftPolicy::classify(Self, Int, Int, Int) -> DriftLevel
+pub fn DriftPolicy::default() -> Self
+pub fn DriftPolicy::strict() -> Self
+
+pub(all) struct DriftReport {
+  level : DriftLevel
+  score_bp : Int
+  max_delta_bp : Int
+  shifted_buckets : Int
+  reference_total : Int
+  current_total : Int
+  buckets : Array[BucketDelta]
+} derive(Eq, @debug.Debug)
+pub fn DriftReport::is_alert(Self) -> Bool
+pub fn DriftReport::level_name(Self) -> String
+pub fn DriftReport::to_json(Self) -> String
+
+pub(all) struct DriftWindow {
+  spec : BucketSpec
+  capacity : Int
+  values : Array[Int]
+} derive(Eq, @debug.Debug)
+pub fn DriftWindow::histogram(Self) -> Histogram
+pub fn DriftWindow::length(Self) -> Int
+pub fn DriftWindow::new(BucketSpec, Int) -> Self
+pub fn DriftWindow::push(Self, Int) -> Self
+
+pub(all) struct Histogram {
+  spec : BucketSpec
+  counts : Array[Int]
+  total : Int
+} derive(Eq, @debug.Debug)
+pub fn Histogram::add(Self, Int) -> Self
+pub fn Histogram::add_many(Self, Array[Int]) -> Self
+pub fn Histogram::count_at(Self, Int) -> Int
+pub fn Histogram::new(BucketSpec) -> Self
+pub fn Histogram::share_bp_at(Self, Int) -> Int
+pub fn Histogram::to_json(Self) -> String
+
+// Type aliases
+
+// Traits
+

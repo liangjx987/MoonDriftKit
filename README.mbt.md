@@ -15,6 +15,7 @@ tests.
 - Drift reports with score, maximum bucket shift, shifted bucket count, and
   stable/watch/drift levels.
 - Fixed-size streaming windows for recent values.
+- Configurable drift policies for conservative or strict alerting.
 - Stable JSON export for CI logs, dashboards, and reproducible review evidence.
 - CLI demo for quick smoke testing.
 
@@ -43,6 +44,24 @@ test {
 
   assert_eq(window.length(), 3)
   assert_eq(window.histogram().total, 3)
+}
+```
+
+## Policy Tuning
+
+```mbt nocheck
+///|
+test {
+  let spec = BucketSpec::new(0, 100, 5)
+  let reference = Histogram::new(spec).add_many([10, 20, 30, 40, 50])
+  let current = Histogram::new(spec).add_many([10, 20, 30, 60, 90])
+  let report = compare_histograms_with_policy(
+    reference,
+    current,
+    DriftPolicy::strict(),
+  )
+
+  assert_true(report.level == Drift)
 }
 ```
 
