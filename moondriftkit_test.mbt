@@ -76,8 +76,12 @@ test "level names are stable public strings" {
 ///|
 test "strict policy can escalate borderline movement" {
   let spec = BucketSpec::new(0, 100, 5)
-  let reference = Histogram::new(spec).add_many([10, 20, 30, 40, 50])
-  let current = Histogram::new(spec).add_many([10, 20, 30, 60, 50])
+  let reference = Histogram::new(spec).add_many([
+    5, 10, 25, 30, 35, 45, 50, 55, 65, 75,
+  ])
+  let current = Histogram::new(spec).add_many([
+    5, 10, 25, 30, 35, 45, 50, 85, 65, 75,
+  ])
   let default_report = compare_histograms(reference, current)
   let strict_report = compare_histograms_with_policy(
     reference,
