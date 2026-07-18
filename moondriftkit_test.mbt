@@ -19,6 +19,18 @@ test "histogram counts values and basis point shares" {
 }
 
 ///|
+test "adding a sample does not mutate an earlier histogram value" {
+  let original = Histogram::new(BucketSpec::new(0, 100, 4)).add(10)
+  let derived = original.add(90)
+  assert_eq(original.total, 1)
+  assert_eq(original.count_at(0), 1)
+  assert_eq(original.count_at(3), 0)
+  assert_eq(derived.total, 2)
+  assert_eq(derived.count_at(0), 1)
+  assert_eq(derived.count_at(3), 1)
+}
+
+///|
 test "drift report classifies shifted distributions" {
   let spec = BucketSpec::new(0, 100, 5)
   let reference = Histogram::new(spec).add_many([5, 15, 25, 35, 45])

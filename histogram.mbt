@@ -14,8 +14,14 @@ pub fn Histogram::new(spec : BucketSpec) -> Histogram {
 ///|
 pub fn Histogram::add(self : Histogram, value : Int) -> Histogram {
   let index = self.spec.index_of(value)
-  self.counts[index] = self.counts[index] + 1
-  { spec: self.spec, counts: self.counts, total: self.total + 1 }
+  // Histograms are value objects. Copy before changing a bucket so a caller
+  // can safely retain a baseline while deriving a current observation window.
+  let counts = Array::make(self.counts.length(), 0)
+  for i = 0; i < self.counts.length(); i = i + 1 {
+    counts[i] = self.counts[i]
+  }
+  counts[index] = counts[index] + 1
+  { spec: self.spec, counts, total: self.total + 1 }
 }
 
 ///|
